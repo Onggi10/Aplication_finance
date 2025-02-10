@@ -9,13 +9,16 @@ import {
   IconButton,
   Box,
   useMediaQuery,
+  useTheme,
+  Slide,
 } from "@mui/material";
 import { Dashboard, AttachMoney, Savings, Menu } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 900px)"); // ✅ Deteksi ukuran layar
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // ✅ Gunakan tema breakpoints
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
@@ -57,38 +60,45 @@ const Sidebar: React.FC = () => {
         <IconButton
           onClick={toggleDrawer}
           sx={{
-            position: "absolute",
-            top: 10,
-            left: 10,
+            position: "fixed",
+            top: 15,
+            left: 15,
             color: "white",
             backgroundColor: "#1976d2",
-            zIndex: 1201, // Agar di atas elemen lain
+            zIndex: 1300, // ✅ Pastikan selalu di atas
+            "&:hover": {
+              backgroundColor: "#1565c0",
+            },
           }}
         >
           <Menu />
         </IconButton>
       )}
 
-      {/* Drawer untuk Desktop (permanen) & Mobile (bisa ditutup) */}
-      <Drawer
-        variant={isMobile ? "temporary" : "permanent"}
-        open={isMobile ? mobileOpen : true}
-        onClose={toggleDrawer}
-        sx={{
-          width: isMobile ? "auto" : 20,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: 240,
-            boxSizing: "border-box",
-            backgroundColor: "#1976d2",
-            color: "white",
-          },
-        }}
-      >
-        {drawerContent}
-      </Drawer>
+      {/* Animasi Slide untuk Sidebar Mobile */}
+      <Slide direction="right" in={mobileOpen} mountOnEnter unmountOnExit>
+        <Drawer
+          variant={isMobile ? "temporary" : "permanent"}
+          open={mobileOpen || !isMobile} // ✅ Drawer tetap terbuka di desktop
+          onClose={toggleDrawer}
+          transitionDuration={{ enter: 400, exit: 300 }} // ✅ Tambahkan animasi masuk & keluar
+          sx={{
+            width: isMobile ? "auto" : 240,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: 240,
+              boxSizing: "border-box",
+              backgroundColor: "#1976d2",
+              color: "white",
+              transition: "transform 0.3s ease-in-out", // ✅ Tambahkan transisi
+            },
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+      </Slide>
 
-      {/* Spacer agar konten tidak tertutup di desktop */}
+      {/* Spacer agar konten utama tidak tertutup */}
       {!isMobile && <Box sx={{ width: 240 }} />}
     </>
   );

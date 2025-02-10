@@ -10,7 +10,7 @@ import {
   Box,
   useMediaQuery,
   useTheme,
-  Slide,
+  Toolbar,
 } from "@mui/material";
 import { Dashboard, AttachMoney, Savings, Menu } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -18,44 +18,47 @@ import { Link } from "react-router-dom";
 const Sidebar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // ✅ Gunakan tema breakpoints
+  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // ✅ Cek jika layar kecil
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
   };
 
   const drawerContent = (
-    <List>
-      <ListItem disablePadding>
-        <ListItemButton component={Link} to="/" onClick={toggleDrawer}>
-          <ListItemIcon sx={{ color: "white" }}>
-            <Dashboard />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItemButton>
-      </ListItem>
-      <ListItem disablePadding>
-        <ListItemButton component={Link} to="/transactions" onClick={toggleDrawer}>
-          <ListItemIcon sx={{ color: "white" }}>
-            <AttachMoney />
-          </ListItemIcon>
-          <ListItemText primary="Transaksi" />
-        </ListItemButton>
-      </ListItem>
-      <ListItem disablePadding>
-        <ListItemButton component={Link} to="/savings" onClick={toggleDrawer}>
-          <ListItemIcon sx={{ color: "white" }}>
-            <Savings />
-          </ListItemIcon>
-          <ListItemText primary="Tabungan" />
-        </ListItemButton>
-      </ListItem>
-    </List>
+    <Box sx={{ width: 240 }}>
+      <Toolbar />
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/" onClick={toggleDrawer}>
+            <ListItemIcon sx={{ color: "white" }}>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="Dashboard" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/transactions" onClick={toggleDrawer}>
+            <ListItemIcon sx={{ color: "white" }}>
+              <AttachMoney />
+            </ListItemIcon>
+            <ListItemText primary="Transaksi" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component={Link} to="/savings" onClick={toggleDrawer}>
+            <ListItemIcon sx={{ color: "white" }}>
+              <Savings />
+            </ListItemIcon>
+            <ListItemText primary="Tabungan" />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
   );
 
   return (
     <>
-      {/* Tombol Menu untuk Mobile */}
+      {/* Tombol Menu hanya muncul di mobile */}
       {isMobile && (
         <IconButton
           onClick={toggleDrawer}
@@ -65,40 +68,36 @@ const Sidebar: React.FC = () => {
             left: 15,
             color: "white",
             backgroundColor: "#1976d2",
-            zIndex: 1300, // ✅ Pastikan selalu di atas
-            "&:hover": {
-              backgroundColor: "#1565c0",
-            },
+            zIndex: 1300, // ✅ Agar tidak tertutup elemen lain
+            "&:hover": { backgroundColor: "#1565c0" },
           }}
         >
           <Menu />
         </IconButton>
       )}
 
-      {/* Animasi Slide untuk Sidebar Mobile */}
-      <Slide direction="right" in={mobileOpen} mountOnEnter unmountOnExit>
-        <Drawer
-          variant={isMobile ? "temporary" : "permanent"}
-          open={mobileOpen || !isMobile} // ✅ Drawer tetap terbuka di desktop
-          onClose={toggleDrawer}
-          transitionDuration={{ enter: 400, exit: 300 }} // ✅ Tambahkan animasi masuk & keluar
-          sx={{
-            width: isMobile ? "auto" : 240,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: 240,
-              boxSizing: "border-box",
-              backgroundColor: "#1976d2",
-              color: "white",
-              transition: "transform 0.3s ease-in-out", // ✅ Tambahkan transisi
-            },
-          }}
-        >
-          {drawerContent}
-        </Drawer>
-      </Slide>
+      {/* Sidebar Mobile dengan Animasi */}
+      <Drawer
+        variant={isMobile ? "temporary" : "permanent"} // ✅ Sidebar permanen di desktop, bisa ditutup di mobile
+        open={isMobile ? mobileOpen : true} // ✅ Di desktop, sidebar selalu terbuka
+        onClose={toggleDrawer}
+        ModalProps={{
+          keepMounted: true, // ✅ Optimasi performa untuk mobile
+        }}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 240, // ✅ Pastikan lebar sidebar tetap 240px
+            boxSizing: "border-box",
+            backgroundColor: "#1976d2",
+            color: "white",
+            transition: "transform 0.3s ease-in-out", // ✅ Animasi smooth
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
 
-      {/* Spacer agar konten utama tidak tertutup */}
+      {/* Spacer agar konten utama tidak tertutup sidebar */}
       {!isMobile && <Box sx={{ width: 240 }} />}
     </>
   );

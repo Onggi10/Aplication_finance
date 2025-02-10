@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 const Sidebar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // ✅ Cek jika layar kecil
+  const isMobile = useMediaQuery(theme.breakpoints.down("md")); // ✅ Sidebar akan berubah di mobile
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
@@ -86,11 +86,10 @@ const Sidebar: React.FC = () => {
         }}
         sx={{
           "& .MuiDrawer-paper": {
-            width: 240, // ✅ Pastikan lebar sidebar tetap 240px
+            width: 240,
             boxSizing: "border-box",
             backgroundColor: "#1976d2",
             color: "white",
-            transition: "transform 0.3s ease-in-out", // ✅ Animasi smooth
           },
         }}
       >

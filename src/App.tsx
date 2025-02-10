@@ -1,6 +1,6 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, CssBaseline, Box } from "@mui/material";
-import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
@@ -14,17 +14,26 @@ export interface Transaction {
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [balance, setBalance] = useState<number>(0); // ✅ Saldo utama
-  const [savingsBalance, setSavingsBalance] = useState<number>(0); // ✅ Saldo tabungan
+  const [balance, setBalance] = useState<number>(0);
+  const [savingsBalance, setSavingsBalance] = useState<number>(0);
 
-  // Hitung total pemasukan dan pengeluaran
-  const totalIncome = transactions
-    .filter((trx) => trx.type === "income")
-    .reduce((acc, trx) => acc + trx.amount, 0);
+  // ✅ Ambil data dari localStorage saat aplikasi dimulai
+  useEffect(() => {
+    const savedTransactions = localStorage.getItem("transactions");
+    const savedBalance = localStorage.getItem("balance");
+    const savedSavings = localStorage.getItem("savingsBalance");
 
-  const totalExpenses = transactions
-    .filter((trx) => trx.type === "expense")
-    .reduce((acc, trx) => acc + trx.amount, 0);
+    if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
+    if (savedBalance) setBalance(JSON.parse(savedBalance));
+    if (savedSavings) setSavingsBalance(JSON.parse(savedSavings));
+  }, []);
+
+  // ✅ Simpan data ke localStorage setiap kali ada perubahan
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+    localStorage.setItem("balance", JSON.stringify(balance));
+    localStorage.setItem("savingsBalance", JSON.stringify(savingsBalance));
+  }, [transactions, balance, savingsBalance]);
 
   return (
     <Router>
@@ -37,10 +46,10 @@ export default function App() {
               path="/"
               element={
                 <Dashboard
-                  income={totalIncome}
-                  expenses={totalExpenses}
+                  income={balance}
+                  expenses={transactions.filter((t) => t.type === "expense").reduce((acc, t) => acc + t.amount, 0)}
                   savings={savingsBalance}
-                  balance={balance} // ✅ Langsung gunakan balance tanpa dikurangi savingsBalance
+                  balance={balance}
                 />
               }
             />
@@ -59,7 +68,7 @@ export default function App() {
               element={
                 <Savings
                   setSavings={setSavingsBalance}
-                  setBalance={setBalance} // ✅ Pastikan saldo utama dikurangi saat menabung
+                  setBalance={setBalance}
                   balance={balance}
                 />
               }

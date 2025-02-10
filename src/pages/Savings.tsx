@@ -23,19 +23,23 @@ const Savings: React.FC<SavingsProps> = ({ setSavings, setBalance, balance }) =>
   const [name, setName] = useState("");
   const [amount, setAmount] = useState<number | "">("");
 
-  const addSaving = () => {
-    if (!name || amount === "" || amount <= 0 || amount > balance) {
-      alert("Nominal tidak valid atau melebihi saldo yang tersedia.");
-      return;
-    }
-    
-    const newSaving = { id: savingsList.length + 1, name, amount };
-    setSavingsList([...savingsList, newSaving]);
-    setSavings((prev) => prev + amount);
-    setBalance((prev) => prev - amount); // ✅ Kurangi saldo utama setelah menabung
-    setName("");
-    setAmount("");
-  };
+const addSaving = () => {
+  if (!name || amount === "" || amount <= 0 || amount > balance) {
+    alert("Nominal tidak valid atau melebihi saldo yang tersedia.");
+    return;
+  }
+
+  const newSaving = { id: savingsList.length + 1, name, amount };
+  const updatedSavings = [...savingsList, newSaving];
+
+  setSavingsList(updatedSavings);
+  setSavings((prev: number) => prev + amount); // ✅ Tambahkan tipe number di parameter prev
+  setBalance((prev: number) => prev - amount); // ✅ Tambahkan tipe number di parameter prev
+
+  // ✅ Simpan tabungan ke localStorage
+  localStorage.setItem("savingsBalance", JSON.stringify(updatedSavings));
+  localStorage.setItem("balance", JSON.stringify(balance - amount));
+};
 
   return (
     <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "80vh" }}>

@@ -23,18 +23,17 @@ const Transactions: React.FC<TransactionsProps> = ({ transactions, setTransactio
   const [type, setType] = useState<"income" | "expense">("income");
 
   const handleAddTransaction = () => {
-    if (amount <= 0) return;
+  if (amount <= 0) return;
 
-    const newTransaction: Transaction = {
-      id: transactions.length + 1,
-      type,
-      amount,
-    };
+  const newTransaction: Transaction = { id: transactions.length + 1, type, amount };
+  const updatedTransactions = [...transactions, newTransaction];
 
-    setTransactions([...transactions, newTransaction]);
-    setBalance((prev) => (type === "income" ? prev + amount : prev - amount)); // ✅ Update saldo utama
-    setAmount(0);
-  };
+  setTransactions(updatedTransactions);
+  setBalance((prev) => (type === "income" ? prev + amount : prev - amount));
+
+  // ✅ Simpan transaksi ke localStorage
+  localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+};
 
   return (
     <Container

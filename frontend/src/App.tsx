@@ -5,9 +5,11 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Savings from "./pages/Savings";
+import { db } from "./firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 export interface Transaction {
-  id: number;
+  id: string;
   type: "income" | "expense";
   amount: number;
 }
@@ -17,23 +19,25 @@ export default function App() {
   const [balance, setBalance] = useState<number>(0);
   const [savingsBalance, setSavingsBalance] = useState<number>(0);
 
-  // ✅ Ambil data dari localStorage saat aplikasi dimulai
   useEffect(() => {
-    const savedTransactions = localStorage.getItem("transactions");
-    const savedBalance = localStorage.getItem("balance");
-    const savedSavings = localStorage.getItem("savingsBalance");
+    const fetchTransactions = async () => {
+      const querySnapshot = await getDocs(collection(db, "transactions"));
+      const transactionsData: Transaction[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as { type: "income" | "expense"; amount: number }),
+      }));
 
-    if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
-    if (savedBalance) setBalance(JSON.parse(savedBalance));
-    if (savedSavings) setSavingsBalance(JSON.parse(savedSavings));
+      setTransactions(transactionsData);
+
+      const totalBalance = transactionsData.reduce(
+        (acc, t) => (t.type === "income" ? acc + t.amount : acc - t.amount),
+        0
+      );
+      setBalance(totalBalance);
+    };
+
+    fetchTransactions();
   }, []);
-
-  // ✅ Simpan data ke localStorage setiap kali ada perubahan
-  useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-    localStorage.setItem("balance", JSON.stringify(balance));
-    localStorage.setItem("savingsBalance", JSON.stringify(savingsBalance));
-  }, [transactions, balance, savingsBalance]);
 
   return (
     <Router>
@@ -47,7 +51,9 @@ export default function App() {
               element={
                 <Dashboard
                   income={balance}
-                  expenses={transactions.filter((t) => t.type === "expense").reduce((acc, t) => acc + t.amount, 0)}
+                  expenses={transactions
+                    .filter((t) => t.type === "expense")
+                    .reduce((acc, t) => acc + t.amount, 0)}
                   savings={savingsBalance}
                   balance={balance}
                 />

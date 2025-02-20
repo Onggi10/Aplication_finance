@@ -15,9 +15,9 @@ router.get("/", async (req: Request, res: Response) => {
       id: doc.id,
       ...doc.data(),
     }));
-    res.json(savings);
+    return res.json(savings);
   } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan saat mengambil data tabungan", details: error });
+    return res.status(500).json({ error: "Terjadi kesalahan saat mengambil data tabungan", details: error });
   }
 });
 
@@ -34,9 +34,9 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     const docRef = await addDoc(collection(db, "savings"), { name, amount: Number(amount) });
-    res.status(201).json({ id: docRef.id, name, amount: Number(amount) });
+    return res.status(201).json({ id: docRef.id, name, amount: Number(amount) });
   } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan saat menambahkan tabungan", details: error });
+    return res.status(500).json({ error: "Terjadi kesalahan saat menambahkan tabungan", details: error });
   }
 });
 
@@ -48,15 +48,14 @@ router.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // Pastikan ID ada sebelum dihapus
     if (!id) {
       return res.status(400).json({ error: "ID tidak valid" });
     }
 
     await deleteDoc(doc(collection(db, "savings"), id));
-    res.json({ message: "Tabungan berhasil dihapus" });
+    return res.json({ message: "Tabungan berhasil dihapus" });
   } catch (error) {
-    res.status(500).json({ error: "Terjadi kesalahan saat menghapus tabungan", details: error });
+    return res.status(500).json({ error: "Terjadi kesalahan saat menghapus tabungan", details: error });
   }
 });
 

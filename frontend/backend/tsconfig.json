@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "target": "es2016",
-    "module": "commonjs",
-    "lib": ["ES6", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES6",
     "sourceMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*", "backend/**/*"],
+  "exclude": ["node_modules"]
 }

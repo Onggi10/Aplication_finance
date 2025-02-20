@@ -1,7 +1,14 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES6",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*", "backend/**/*"],
+  "exclude": ["node_modules"]
 }

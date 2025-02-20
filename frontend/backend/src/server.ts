@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
-import transactionsRoutes from "../src/routes/transaction";
-import savingsRoutes from "../src/routes/saving";
+import transactionsRoutes from "./routes/transaction";
+import savingsRoutes from "./routes/saving";
 
 const app = express();
 app.use(cors());

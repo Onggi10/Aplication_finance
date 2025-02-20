@@ -1,0 +1,9 @@
+{
+  "routes": [
+    { "src": "/api/(.*)", "dest": "./backend/app.js" },
+    { "src": "/(.*)", "dest": "/frontend/index.html" }
+  ],
+  "functions": {
+    "backend/src/app.ts": { "runtime": "nodejs18.x" }
+  }
+}

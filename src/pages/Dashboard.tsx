@@ -7,7 +7,12 @@ interface DashboardProps {
   balance: number;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ income, expenses, savings, balance }) => {
+const Dashboard: React.FC<DashboardProps> = ({
+  income,
+  expenses,
+  savings,
+  balance,
+}) => {
   return (
     <Container
       sx={{
@@ -29,28 +34,34 @@ const Dashboard: React.FC<DashboardProps> = ({ income, expenses, savings, balanc
           <Card sx={{ backgroundColor: "#4caf50", color: "white" }}>
             <CardContent>
               <Typography variant="h6">Total Pemasukan</Typography>
-              <Typography variant="h4">Rp {income.toLocaleString()}</Typography>
+              <Typography variant="h5">Rp {income.toLocaleString()}</Typography>
             </CardContent>
           </Card>
 
           <Card sx={{ backgroundColor: "#f44336", color: "white" }}>
             <CardContent>
               <Typography variant="h6">Total Pengeluaran</Typography>
-              <Typography variant="h4">Rp {expenses.toLocaleString()}</Typography>
+              <Typography variant="h5">
+                Rp {expenses.toLocaleString()}
+              </Typography>
             </CardContent>
           </Card>
 
           <Card sx={{ backgroundColor: "#2196f3", color: "white" }}>
             <CardContent>
               <Typography variant="h6">Total Tabungan</Typography>
-              <Typography variant="h4">Rp {savings.toLocaleString()}</Typography>
+              <Typography variant="h5">
+                Rp {savings.toLocaleString()}
+              </Typography>
             </CardContent>
           </Card>
 
           <Card sx={{ backgroundColor: "#ff9800", color: "white" }}>
             <CardContent>
               <Typography variant="h6">Saldo Tersedia</Typography>
-              <Typography variant="h4">Rp {balance.toLocaleString()}</Typography>
+              <Typography variant="h5">
+                Rp {balance.toLocaleString()}
+              </Typography>
             </CardContent>
           </Card>
         </Box>
